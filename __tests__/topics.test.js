@@ -19,7 +19,7 @@ describe('/api/topics', () => {
   });
 });
 
-describe('/api/articles', () => {
+describe('/api/articles:/article_id', () => {
   describe('GET /api/articles/:article_id', () => {
     test('200: status code and contain the expected data type and fields', async () => {
       const res = await request(app).get(`/api/articles/33`);
@@ -54,6 +54,29 @@ describe('/api/articles', () => {
 
 
 
+describe('/api/articles', () => {
+  describe('GET /api/articles', () => {
+    test('200: status code and contain the expected data type and fields', async () => {
+      const res = await request(app).get(`/api/articles`);
+      expect(res.statusCode).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      res.body.forEach(article => {
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String), 
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(String)
+          })
+        );
+      });
+    })
+  });
+});
 
 
 
