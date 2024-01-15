@@ -19,7 +19,17 @@ const fetchCommentCount = (articleId) => {
     return db.query(query, [articleId])
       .then(result => result.rows[0].comment_count);
   };
+  const fetchArticleComments = (articleId) => {
+    const query = `
+      SELECT *
+      FROM comments
+      WHERE article_id = $1
+    `;
+  
+    return db.query(query, [articleId])
+      .then((result) => result.rows);
+  };
   
 module.exports = {
-    fetchArticles,fetchAllArticles,fetchCommentCount
+    fetchArticles,fetchAllArticles,fetchCommentCount,fetchArticleComments
 }

@@ -1,4 +1,5 @@
-const {fetchArticles, fetchAllArticles,fetchCommentCount} = require('../models/ArtcilesModel')
+const e = require('express');
+const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments} = require('../models/ArtcilesModel')
 
 const getArticles = (req, res, next) => {
     const {article_id} = req.params;
@@ -45,8 +46,28 @@ const getAllArticles = (req, res, next) => {
         next(err);
       });
 };
+const getArticlesByIdAndComments = (req, res, next) => {
+  const { article_id } = req.params;
 
+  if (!article_id || isNaN(article_id)) {
+    return res.status(400).json({ error: 'Invalid or missing article_id' });
+  }
+
+  fetchArticleComments(article_id)
+    .then((comments) => {
+      if (comments.length === 0) {
+        return res.status(404).json({ error: 'Article not found' });
+      }else{
+        const sortedComments = comments.sort((a, b) => b.created_at - a.created_at);
+        res.status(200).json(sortedComments);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      next(err);
+    });
+};
 
 module.exports ={
-    getArticles,getAllArticles
+    getArticles,getAllArticles,getArticlesByIdAndComments
 }
