@@ -19,6 +19,57 @@ describe('/api/topics', () => {
   });
 });
 
+describe('/api/articles', () => {
+  describe('GET /api/articles/:article_id', () => {
+    test('200: status code and contain the expected data type and fields', async () => {
+      const res = await request(app).get(`/api/articles/33`);
+      expect(res.statusCode).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      res.body.forEach(article => {
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String), 
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+          })
+        );
+      });
+    });
+    test('400: when passing wrong type of id', async () => {
+      const res = await request(app).get('/api/articles/asdasd');
+      expect(res.statusCode).toBe(400);
+    });
+
+    test('404: when passing a non-existent id', async () => {
+      const res = await request(app).get(`/api/articles/44444`);
+      expect(res.statusCode).toBe(404);
+    });
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 afterAll(async () => {
   await db.end();
 });
