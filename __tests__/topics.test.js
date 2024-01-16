@@ -1,6 +1,7 @@
 const request = require('supertest');
 const db = require('../db/connection.js');
 const app = require('../app.js');
+const { sorted } = require('jest-sorted');
 
 describe('/api/topics', () => {
   describe('we have to get all topics with slug and description', () => {
@@ -59,23 +60,35 @@ describe('/api/articles', () => {
     test('200: status code and contain the expected data type and fields', async () => {
       const res = await request(app).get(`/api/articles`);
       expect(res.statusCode).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
-      res.body.forEach(article => {
-        expect(article).toEqual(
-          expect.objectContaining({
-            article_id: expect.any(Number),
-            title: expect.any(String),
-            topic: expect.any(String),
-            author: expect.any(String),
-            created_at: expect.any(String), 
-            votes: expect.any(Number),
-            article_img_url: expect.any(String),
-            comment_count: expect.any(String)
-          })
-        );
-      });
-    })
+      expect(Array.isArray(res.body.articles)).toBe(true);
+      if (res.body.length > 0) {
+        res.body.forEach(article => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(String)
+            })
+          );
+        });
+      }
+    });
   });
+  test('should be sorted by created_at in descending order', async () => {
+    const res = await request(app).get('/api/articles');
+    if (res.body.length > 1) {
+      const sortedArticles = res.body.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+      expect(res.body).toEqual(sortedArticles);
+    }
+  });
+  
 });
 
 

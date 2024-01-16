@@ -39,7 +39,7 @@ const getAllArticles = (req, res, next) => {
       .then((articlesWithCommentCount) => {
         const sortedArticles = articlesWithCommentCount.sort((a, b) => b.created_at - a.created_at);
         const formattedArticles = sortedArticles.map(({ body, ...rest }) => rest); 
-        res.status(200).json(formattedArticles);
+        res.status(200).json({ articles: formattedArticles });
       })
       .catch((err) => {
         console.error(err);
