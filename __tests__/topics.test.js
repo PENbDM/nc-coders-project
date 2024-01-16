@@ -30,6 +30,7 @@ describe('/api/articles:/article_id', () => {
       expect(Array.isArray(res.body)).toBe(true); 
 
       const article =res.body[0]
+      expect(article.article_id).toBe(33);
       expect(article).toEqual(
         expect.objectContaining({
           article_id: expect.any(Number),
