@@ -13,35 +13,7 @@ const getArticles = (req, res, next) => {
           res.status(200).json(articles.rows);
       })
       .catch((err) => {
-        console.error(err);
-        next(err);
-      });
-};
 
-
-
-const getAllArticles = (req, res, next) => {
-    fetchAllArticles()
-      .then((articles) => {
-        const promises = articles.rows.map((article) => {
-          return fetchCommentCount(article.article_id)
-            .then((commentCount) => {
-              return {
-                ...article,
-                comment_count: commentCount,
-              };
-            });
-        });
-  
-        return Promise.all(promises);
-      })
-      .then((articlesWithCommentCount) => {
-        const sortedArticles = articlesWithCommentCount.sort((a, b) => b.created_at - a.created_at);
-        const formattedArticles = sortedArticles.map(({ body, ...rest }) => rest); 
-        res.status(200).json(formattedArticles);
-      })
-      .catch((err) => {
-        console.error(err);
         next(err);
       });
 };
@@ -67,7 +39,7 @@ const getArticlesByIdAndComments = (req, res, next) => {
     });
 };
 
-const postCommentForArticleById = (req,res,next)=>{
+const postCommentForArticleById = (req, res, next) => {
   const { article_id } = req.params;
   const { username, body } = req.body;
   if (!article_id || isNaN(article_id)) {
@@ -77,32 +49,7 @@ const postCommentForArticleById = (req,res,next)=>{
     return res.status(400).json({ error: 'Username and body are required in the request body' });
   }
   insertCommentFunction(article_id, username, body)
-  .then((comment) => {
-    res.status(201).json(comment);
-  })
-  .catch((err) => {
-    console.error(err);
-    next(err);
-  });
-}
 
-const patchArticlesByID = (req, res, next) => {
-  const { inc_votes } = req.body;
-  const { article_id } = req.params;
-  if (!article_id || isNaN(article_id)) {
-    return res.status(400).json({ status: 400, msg: 'Invalid or missing article_id' });
-  }
-  updateArticleVotes(article_id, inc_votes)
-    .then((updatedArticle) => {
-      if (!updatedArticle) {
-        return res.status(404).json({ status: 404, msg: 'Article not found' });
-      }
-      res.status(200).json({ article: updatedArticle });
-    })
-    .catch((err) => {
-      res.status(500).json({ status: 500, msg: 'Internal Server Error' });
-    });
-}
 
 
 
