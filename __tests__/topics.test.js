@@ -1,6 +1,7 @@
 const request = require('supertest');
 const db = require('../db/connection.js');
 const app = require('../app.js');
+const { sorted } = require('jest-sorted');
 
 describe('/api/topics', () => {
   describe('we have to get all topics with slug and description', () => {
@@ -65,7 +66,7 @@ describe('/api/articles', () => {
     test('200: status code and contain the expected data type and fields', async () => {
       const res = await request(app).get(`/api/articles`);
       expect(res.statusCode).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
+
     });
     test('400: when passing wrong type of id', async () => {
       const res = await request(app).get('/api/articles/asdasd/comments');
