@@ -110,7 +110,39 @@ describe('/api/articles/:article_id/comments', () => {
   });
 });
 
+describe('/api/articles/:article_id/comments', () => {
+  describe('POST /api/articles/1/comments', () => {
+    test('201: status code and contain the expected data type and fields', async () => {
+      const newComment = {
+        username: 'dimatest',
+        body: 'testtesttesttest',
+      };
+      const res = await request(app)
+        .post('/api/articles/1/comments') 
+        .send(newComment);
+      expect(res.statusCode).toBe(201);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          comment_id: expect.any(Number),
+          body: newComment.body,
+          article_id: 1,
+          author: newComment.username,
+          votes: 0,
+          created_at: expect.any(String),
+        })
+      );
+    });
 
+    test('400: when missing username or body', async () => {
+      const res = await request(app)
+        .post('/api/articles/1/comments') 
+        .send({}); 
+
+      expect(res.statusCode).toBe(400);
+    });
+
+  });
+});
 
 
 
