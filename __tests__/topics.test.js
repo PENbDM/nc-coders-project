@@ -187,18 +187,49 @@ describe('/api/articles/:article_id', () => {
       };
 
       const nonExistentArticleId = 999;
-
+  
       const res = await request(app)
         .patch(`/api/articles/${nonExistentArticleId}`)
         .send(updateData);
       expect(res.statusCode).toBe(404);
       expect(res.body.msg).toBe("Article not found")
-
     });
   });
 });
 
+describe('/api/comments/:comment_id', () => {
+  describe('DELETE /api/comments/:comment_id', () => {
+    test('200: when deleting a valid comment', async () => {
+      const validCommentId = 6;
+      const res = await request(app).delete(`/api/comments/${validCommentId}`);
+      
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('deletedComment');
+    });
 
+    test('400: when missing or invalid comment_id', async () => {
+      const invalidCommentId = 'invalidId';
+      const res = await request(app).delete(`/api/comments/${invalidCommentId}`);
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toEqual({
+        status: 400,
+        msg: 'Invalid or missing comment_id',
+      });
+    });
+
+    test('404: when deleting a non-existent comment', async () => {
+      const nonExistentCommentId = 999;
+      const res = await request(app).delete(`/api/comments/${nonExistentCommentId}`);
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body).toEqual({
+        status: 404,
+        msg: 'Comment not found',
+      });
+    });
+  });
+});
 afterAll(async () => {
   await db.end();
 });

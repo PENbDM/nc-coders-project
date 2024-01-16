@@ -70,7 +70,18 @@ const fetchCommentCount = (articleId) => {
         throw err; 
       });
   }
+
+  const deleteCommentById = (comment_id) => {
+    const query = 'DELETE FROM comments WHERE comment_id = $1 RETURNING *';
   
+    return db.query(query, [comment_id])
+      .then((result) => {
+        return result.rows[0];
+      })
+      .catch((err)=>{
+        throw err;
+      })
+  };
 module.exports = {
-    fetchArticles,fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes
+    fetchArticles,fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes,deleteCommentById
 }

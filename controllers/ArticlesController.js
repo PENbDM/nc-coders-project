@@ -1,4 +1,4 @@
-const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes} = require('../models/ArtcilesModel')
+const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes,deleteCommentById} = require('../models/ArtcilesModel')
 
 const getArticles = (req, res, next) => {
     const {article_id} = req.params;
@@ -103,9 +103,24 @@ const patchArticlesByID = (req, res, next) => {
       res.status(500).json({ status: 500, msg: 'Internal Server Error' });
     });
 }
-
+const deleteCommentByIdController = (req, res, next) => {
+  const { comment_id } = req.params;
+  if (!comment_id || isNaN(comment_id)) {
+    return res.status(400).json({ status: 400, msg: 'Invalid or missing comment_id' });
+  }
+  deleteCommentById(comment_id)
+    .then((deletedComment) => {
+      if(!deletedComment){
+        return res.status(404).json({ status: 404, msg: 'Comment not found' });
+      }
+      res.status(200).json({ deletedComment });
+    })
+    .catch((err) => {
+      res.status(500).json({ status: 500, msg: 'Internal Server Error' });
+    });
+};
 
 
 module.exports ={
-    getArticles,getAllArticles,getArticlesByIdAndComments,postCommentForArticleById,patchArticlesByID
+    getArticles,getAllArticles,getArticlesByIdAndComments,postCommentForArticleById,patchArticlesByID,deleteCommentByIdController
 }
