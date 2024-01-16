@@ -152,7 +152,58 @@ describe('/api/articles/:article_id/comments', () => {
 });
 
 
+describe('/api/articles/:article_id', () => {
+  describe('PATCH /api/articles/:article_id', () => {
+    test('200: status code and contain the expected data type and fields', async () => {
+      const updateData = {
+        inc_votes: 5,
+      };
 
+      const existingArticleId = 1;
+
+      const res = await request(app)
+        .patch(`/api/articles/${existingArticleId}`)
+        .send(updateData);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          article: expect.objectContaining({
+            article_id: existingArticleId,
+            votes: expect.any(Number),
+          }),
+        })
+      );
+    });
+
+    test('400: when missing inc_votes or invalid article_id', async () => {
+      const updateData = {
+      };
+
+      const res = await request(app)
+        .patch('/api/articles/invalidId')
+        .send(updateData);
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.msg).toBe("Invalid or missing article_id")
+    });
+
+    test('404: when passing a non-existent article_id', async () => {
+      const updateData = {
+        inc_votes: 5,
+      };
+
+      const nonExistentArticleId = 999;
+
+      const res = await request(app)
+        .patch(`/api/articles/${nonExistentArticleId}`)
+        .send(updateData);
+      expect(res.statusCode).toBe(404);
+      expect(res.body.msg).toBe("Article not found")
+
+    });
+  });
+});
 
 afterAll(async () => {
   await db.end();

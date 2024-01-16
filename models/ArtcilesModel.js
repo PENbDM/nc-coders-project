@@ -51,7 +51,21 @@ const fetchCommentCount = (articleId) => {
           .then((result) => result.rows[0]);
       });
   };
+
+
+  const updateArticleVotes = (article_id, inc_votes) => {
+    return db.query(
+      'UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *',
+      [inc_votes, article_id]
+    )
+      .then((result) => {
+        return result.rows[0];
+      })
+      .catch((err) => {
+        throw err; 
+      });
+  }
   
 module.exports = {
-    fetchArticles,fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction
+    fetchArticles,fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes
 }
