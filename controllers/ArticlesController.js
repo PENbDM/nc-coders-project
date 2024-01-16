@@ -13,7 +13,6 @@ const getArticles = (req, res, next) => {
           res.status(200).json(articles.rows);
       })
       .catch((err) => {
-        console.error(err);
         next(err);
       });
 };
