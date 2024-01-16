@@ -79,13 +79,36 @@ describe('/api/articles', () => {
 });
 
 
+describe('/api/articles/:article_id/comments', () => {
+  describe('GET /api/articles/2/comments', () => {
+    test('200: status code and contain the expected data type and fields', async () => {
+      const res = await request(app).get(`/api/articles/2/comments`);
+      expect(res.statusCode).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      res.body.forEach(comment => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+      });
+    });
+    test('400: when passing wrong type of id', async () => {
+      const res = await request(app).get('/api/articles/asdasd/comments');
+      expect(res.statusCode).toBe(400);
+    });
 
-
-
-
-
-
-
+    test('404: when passing a non-existent id', async () => {
+      const res = await request(app).get(`/api/articles/44444/comments`);
+      expect(res.statusCode).toBe(404);
+    });
+  });
+});
 
 
 
