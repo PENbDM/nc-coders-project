@@ -114,11 +114,11 @@ describe('/api/articles/:article_id/comments', () => {
   describe('POST /api/articles/1/comments', () => {
     test('201: status code and contain the expected data type and fields', async () => {
       const newComment = {
-        username: 'dimatest',
+        username: 'grumpy19',
         body: 'testtesttesttest',
       };
       const res = await request(app)
-        .post('/api/articles/1/comments') 
+        .post('/api/articles/1/comments')
         .send(newComment);
       expect(res.statusCode).toBe(201);
       expect(res.body).toEqual(
@@ -135,15 +135,48 @@ describe('/api/articles/:article_id/comments', () => {
 
     test('400: when missing username or body', async () => {
       const res = await request(app)
-        .post('/api/articles/1/comments') 
-        .send({}); 
-
+        .post('/api/articles/1/comments')
+        .send({});
       expect(res.statusCode).toBe(400);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          error: 'Username and body are required in the request body',
+        })
+      );
     });
 
+    test('404: when username not found', async () => {
+      const newComment = {
+        username: 'nonexistentuser',
+        body: 'testtesttesttest',
+      };
+      const res = await request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment);
+      expect(res.statusCode).toBe(404);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          error: 'Username not found',
+        })
+      );
+    });
+    test('400: when article ID is not valid', async () => {
+      const newComment = {
+        username: 'dimatest',
+        body: 'testtesttesttest',
+      };
+      const res = await request(app)
+        .post('/api/articles/not_a_valid_id/comments')
+        .send(newComment);
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          error: 'Invalid or missing article_id',
+        })
+      );
+    });
   });
 });
-
 
 
 
