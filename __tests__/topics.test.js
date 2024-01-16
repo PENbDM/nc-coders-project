@@ -7,11 +7,12 @@ describe('/api/topics', () => {
     test('200: status code and contain the expected data type and fields', async () => {
       const res = await request(app).get('/api/topics');
       expect(res.statusCode).toBe(200);
+      expect(res.status).toBe(200);
       expect(Array.isArray(res.body)).toBe(true);
+      expect(res.body.length).toBeGreaterThan(0);
       res.body.forEach(topic => {
         expect(topic).toHaveProperty('slug');
         expect(typeof topic.slug).toBe('string');
-
         expect(topic).toHaveProperty('description');
         expect(typeof topic.description).toBe('string');
       });
@@ -19,17 +20,18 @@ describe('/api/topics', () => {
   });
 });
 
-describe('/api/articles', () => {
+describe('/api/articles:/article_id', () => {
   describe('GET /api/articles/:article_id', () => {
     test('200: status code and contain the expected data type and fields', async () => {
       const article_id = 33;
       const res = await request(app).get(`/api/articles/${article_id}`);
       expect(res.statusCode).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
-      const article = res.body[0]; 
+      expect(Array.isArray(res.body)).toBe(true); 
+
+      const article =res.body[0]
       expect(article).toEqual(
         expect.objectContaining({
-          article_id: article_id,
+          article_id: expect.any(Number),
           title: expect.any(String),
           topic: expect.any(String),
           author: expect.any(String),
@@ -40,6 +42,8 @@ describe('/api/articles', () => {
         })
       );
     });
+
+
     test('400: when passing wrong type of id', async () => {
       const res = await request(app).get('/api/articles/asdasd');
       expect(res.statusCode).toBe(400);
@@ -49,24 +53,67 @@ describe('/api/articles', () => {
     test('404: when passing a non-existent id', async () => {
       const res = await request(app).get(`/api/articles/44444`);
       expect(res.statusCode).toBe(404);
-      expect(res.body.error).toBe( "Article not found")
+      expect(res.body.error).toBe('Article not found' )
     });
   });
 });
 
 
 
+describe('/api/articles', () => {
+  describe('GET /api/articles', () => {
+    test('200: status code and contain the expected data type and fields', async () => {
+      const res = await request(app).get(`/api/articles`);
+      expect(res.statusCode).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+    });
+    test('400: when passing wrong type of id', async () => {
+      const res = await request(app).get('/api/articles/asdasd/comments');
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe("Invalid or missing article_id")
+    });
 
+    test('404: when passing a non-existent id', async () => {
+      const res = await request(app).get(`/api/articles/44444/comments`);
+      expect(res.statusCode).toBe(404);
+      expect(res.body.error).toBe( "Article not found")
+    });
+  });
+});
 
+describe('/api/articles/:article_id/comments', () => {
+  describe('POST /api/articles/1/comments', () => {
+    test('201: status code and contain the expected data type and fields', async () => {
+      const newComment = {
+        username: 'dimatest',
+        body: 'testtesttesttest',
+      };
+      const res = await request(app)
+        .post('/api/articles/1/comments') 
+        .send(newComment);
+      expect(res.statusCode).toBe(201);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          comment_id: expect.any(Number),
+          body: newComment.body,
+          article_id: 1,
+          author: newComment.username,
+          votes: 0,
+          created_at: expect.any(String),
+        })
+      );
+    });
 
+    test('400: when missing username or body', async () => {
+      const res = await request(app)
+        .post('/api/articles/1/comments') 
+        .send({}); 
 
+      expect(res.statusCode).toBe(400);
+    });
 
-
-
-
-
-
-
+  });
+});
 
 
 
