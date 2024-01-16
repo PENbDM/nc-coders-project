@@ -56,5 +56,22 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:articles_id/comments": {
+    "description": "create posted comment ",
+    "queries": ["username", "body"],
+
+    "exampleResponse": {
+      "comments": [
+       {
+	"comment_id": 309,
+	"body": "testtesttesttest",
+	"article_id": 1,
+	"author": "dimatest",
+	"votes": 0,
+	"created_at": "2024-01-16T11:33:48.049Z"
+}
+      ]
+    }
   }
 }

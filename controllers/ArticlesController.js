@@ -1,5 +1,4 @@
-const e = require('express');
-const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments} = require('../models/ArtcilesModel')
+const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction} = require('../models/ArtcilesModel')
 
 const getArticles = (req, res, next) => {
     const {article_id} = req.params;
@@ -68,6 +67,30 @@ const getArticlesByIdAndComments = (req, res, next) => {
     });
 };
 
+const postCommentForArticleById = (req,res,next)=>{
+  const { article_id } = req.params;
+  const { username, body } = req.body;
+  if (!article_id || isNaN(article_id)) {
+    return res.status(400).json({ error: 'Invalid or missing article_id' });
+  }
+  if (!username || !body) {
+    return res.status(400).json({ error: 'Username and body are required in the request body' });
+  }
+  insertCommentFunction(article_id, username, body)
+  .then((comment) => {
+    res.status(201).json(comment);
+  })
+  .catch((err) => {
+    console.error(err);
+    next(err);
+  });
+
+
+}
+
+
+
+
 module.exports ={
-    getArticles,getAllArticles,getArticlesByIdAndComments
+    getArticles,getAllArticles,getArticlesByIdAndComments,postCommentForArticleById
 }
