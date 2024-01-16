@@ -73,5 +73,33 @@
 }
       ]
     }
+  },
+  "PATCH /api/articles/:articles_id": {
+    "description": "update an article by article_id",
+    "requestBody": {
+      "description": "An object containing the properties to update an article",
+      "requiredFields": [
+        {
+          "name": "inc_votes",
+          "type": "number",
+          "description": "The amount by which the votes property in the database should be updated. Positive values for increment, negative values for decrement."
+        }
+      ],
+      "example": {
+        "inc_votes": 1
+      }
+    },
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 1, 
+        "comment_count": 6
+      }
+    }
   }
 }

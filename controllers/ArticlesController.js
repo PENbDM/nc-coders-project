@@ -1,4 +1,4 @@
-const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction} = require('../models/ArtcilesModel')
+const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes} = require('../models/ArtcilesModel')
 
 const getArticles = (req, res, next) => {
     const {article_id} = req.params;
@@ -84,13 +84,28 @@ const postCommentForArticleById = (req,res,next)=>{
     console.error(err);
     next(err);
   });
+}
 
-
+const patchArticlesByID = (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { article_id } = req.params;
+  if (!article_id || isNaN(article_id)) {
+    return res.status(400).json({ status: 400, msg: 'Invalid or missing article_id' });
+  }
+  updateArticleVotes(article_id, inc_votes)
+    .then((updatedArticle) => {
+      if (!updatedArticle) {
+        return res.status(404).json({ status: 404, msg: 'Article not found' });
+      }
+      res.status(200).json({ article: updatedArticle });
+    })
+    .catch((err) => {
+      res.status(500).json({ status: 500, msg: 'Internal Server Error' });
+    });
 }
 
 
 
-
 module.exports ={
-    getArticles,getAllArticles,getArticlesByIdAndComments,postCommentForArticleById
+    getArticles,getAllArticles,getArticlesByIdAndComments,postCommentForArticleById,patchArticlesByID
 }
