@@ -92,6 +92,9 @@ const patchArticlesByID = (req, res, next) => {
   if (!article_id || isNaN(article_id)) {
     return res.status(400).json({ status: 400, msg: 'Invalid or missing article_id' });
   }
+  if(!inc_votes || isNaN(inc_votes)){
+    return res.status(400).json({status:400,msg:'Invalid or missing inc_votes'})
+  }
   updateArticleVotes(article_id, inc_votes)
     .then((updatedArticle) => {
       if (!updatedArticle) {

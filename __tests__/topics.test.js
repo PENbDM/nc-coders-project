@@ -169,8 +169,9 @@ describe('/api/articles/:article_id', () => {
       );
     });
 
-    test('400: when missing inc_votes or invalid article_id', async () => {
+    test('400: when missing or invalid article_id', async () => {
       const updateData = {
+        inc_votes: 5,
       };
 
       const res = await request(app)
@@ -179,6 +180,17 @@ describe('/api/articles/:article_id', () => {
 
         expect(res.statusCode).toBe(400);
         expect(res.body.msg).toBe("Invalid or missing article_id")
+    });
+    test('400: when missing or invalid inc_votes', async () => {
+      const updateData = {
+      };
+
+      const res = await request(app)
+        .patch('/api/articles/4')
+        .send(updateData);
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.msg).toBe("Invalid or missing inc_votes")
     });
 
     test('404: when passing a non-existent article_id', async () => {

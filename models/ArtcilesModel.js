@@ -66,9 +66,6 @@ const fetchCommentCount = (articleId) => {
       .then((result) => {
         return result.rows[0];
       })
-      .catch((err) => {
-        throw err; 
-      });
   }
   
 module.exports = {
