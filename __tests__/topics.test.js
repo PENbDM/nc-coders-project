@@ -239,6 +239,48 @@ describe('/api/users', () => {
 
 
 
+describe('GET /api/articles with topic query', () => {
+  test('200: should return articles filtered by topic', async () => {
+    const topic = 'football'; 
+
+    const res = await request(app).get(`/api/articles?topic=${topic}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+
+    res.body.forEach(article => {
+      expect(article).toEqual(
+        expect.objectContaining({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: topic,
+          author: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+        })
+      );
+    });
+  });
+  test('200: when no passing topic, get all articles ', async () => {
+    const topic = '';
+    const res = await request(app)
+      .get(`/api/articles?topic=${topic}`)
+    expect(res.statusCode).toBe(200);
+  });
+  test('404: when passing a non-existent topic', async () => {
+    const nonExistentTopic = 'foot';
+    const res = await request(app)
+      .get(`/api/articles?topic=${nonExistentTopic}`)
+    expect(res.statusCode).toBe(404);
+    expect(res.body.error).toBe(`Article with ${nonExistentTopic} topic not found`)
+  });
+
+  
+});
+
+
+
 
 
 

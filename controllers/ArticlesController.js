@@ -1,4 +1,5 @@
-const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes,deleteCommentById} = require('../models/ArtcilesModel')
+const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes,fetchArticlesByTopic} = require('../models/ArtcilesModel')
+
 
 const getArticles = (req, res, next) => {
     const {article_id} = req.params;
@@ -14,9 +15,7 @@ const getArticles = (req, res, next) => {
       })
       .catch((err) => {
 
-        next(err);
-      });
-};
+
 const getArticlesByIdAndComments = (req, res, next) => {
   const { article_id } = req.params;
 
