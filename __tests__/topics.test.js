@@ -1,6 +1,7 @@
 const request = require('supertest');
 const db = require('../db/connection.js');
 const app = require('../app.js');
+const { expect } = require('@jest/globals');
 
 describe('/api/topics', () => {
   describe('we have to get all topics with slug and description', () => {
@@ -22,23 +23,23 @@ describe('/api/topics', () => {
 describe('/api/articles:/article_id', () => {
   describe('GET /api/articles/:article_id', () => {
     test('200: status code and contain the expected data type and fields', async () => {
-      const res = await request(app).get(`/api/articles/33`);
+      const res = await request(app).get(`/api/articles/3`);
       expect(res.statusCode).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
-      res.body.forEach(article => {
-        expect(article).toEqual(
-          expect.objectContaining({
-            article_id: expect.any(Number),
-            title: expect.any(String),
-            topic: expect.any(String),
-            author: expect.any(String),
-            body: expect.any(String),
-            created_at: expect.any(String), 
-            votes: expect.any(Number),
-            article_img_url: expect.any(String),
-          })
-        );
-      });
+    
+      const article = res.body;
+      expect(article).toEqual(
+        expect.objectContaining({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(String) 
+        })
+      );
     });
     test('400: when passing wrong type of id', async () => {
       const res = await request(app).get('/api/articles/asdasd');
