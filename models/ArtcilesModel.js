@@ -40,18 +40,13 @@ const fetchCommentCount = (articleId) => {
     if (!username) {
       return Promise.reject(new Error('Invalid username'));
     }
+    
     return db.query(checkUserQuery, [username])
       .then((result) => {
         if (result.rows.length === 0) {
-          const insertUserQuery = `
-            INSERT INTO users (username, name) 
-            VALUES ($1, $1) 
-            RETURNING *`;
-          return db.query(insertUserQuery, [username]);
+          return Promise.reject(new Error('Username not found'));
         }
-        return Promise.resolve(result.rows[0]);
-      })
-      .then((user) => {
+        const user = result.rows[0];
         const query = `
           INSERT INTO comments (article_id, author, body, votes, created_at)
           VALUES ($1, $2, $3, $4, NOW())
@@ -73,9 +68,10 @@ const fetchCommentCount = (articleId) => {
         return result.rows[0];
       })
   }
+
+  const deleteCommentById = (comment_id) => {
+    const query = 'DELETE FROM comments WHERE comment_id = $1 RETURNING *';
   
-
-
 
 
 
@@ -85,4 +81,14 @@ const fetchCommentCount = (articleId) => {
 
 module.exports = {
     fetchArticles,fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes,fetchArticlesByTopic
+    return db.query(query, [comment_id])
+      .then((result) => {
+        return result.rows[0];
+      })
+      .catch((err)=>{
+        throw err;
+      })
+  };
+module.exports = {
+    fetchArticles,fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes,deleteCommentById
 }
