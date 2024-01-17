@@ -1,4 +1,4 @@
-const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes} = require('../models/ArtcilesModel')
+const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes,deleteCommentById} = require('../models/ArtcilesModel')
 
 const getArticles = (req, res, next) => {
     const {article_id} = req.params;
@@ -54,5 +54,5 @@ const postCommentForArticleById = (req, res, next) => {
 
 
 module.exports ={
-    getArticles,getAllArticles,getArticlesByIdAndComments,postCommentForArticleById,patchArticlesByID
+    getArticles,getAllArticles,getArticlesByIdAndComments,postCommentForArticleById,patchArticlesByID,deleteCommentByIdController
 }

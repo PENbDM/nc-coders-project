@@ -194,16 +194,16 @@ describe('/api/articles/:article_id', () => {
       };
 
       const nonExistentArticleId = 999;
-
+  
       const res = await request(app)
         .patch(`/api/articles/${nonExistentArticleId}`)
         .send(updateData);
       expect(res.statusCode).toBe(404);
       expect(res.body.msg).toBe("Article not found")
-
     });
   });
 });
+
 
 afterAll(async () => {
   await db.end();
