@@ -1,4 +1,4 @@
-const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes} = require('../models/ArtcilesModel')
+const {fetchArticles, fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes,fetchArticlesByTopic} = require('../models/ArtcilesModel')
 
 const getArticles = (req, res, next) => {
     const {article_id} = req.params;
@@ -21,6 +21,16 @@ const getArticles = (req, res, next) => {
 
 
 const getAllArticles = (req, res, next) => {
+  const {topic} = req.query;
+  if(topic){
+    fetchArticlesByTopic(topic)
+    .then((article)=>{
+      if(article.rows.length===0){
+        return res.status(404).json({error: `Article with ${topic} topic not found`})
+      }
+      res.status(200).json(article.rows);
+    })
+  } else {
     fetchAllArticles()
       .then((articles) => {
         const promises = articles.rows.map((article) => {
@@ -44,6 +54,7 @@ const getAllArticles = (req, res, next) => {
         console.error(err);
         next(err);
       });
+    }
 };
 const getArticlesByIdAndComments = (req, res, next) => {
   const { article_id } = req.params;

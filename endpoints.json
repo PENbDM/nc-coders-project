@@ -121,6 +121,32 @@
         "avatar_url": "https://vignette1.wikia.nocookie.net/mrmen/images/7/7f/Mr_Happy.jpg/revision/latest?cb=20140102171729"
       }
     ]
-  }
+  },
+    "GET /api/articles with topic query": {
+      "description": "Retrieve articles filtered by topic using query parameters.",
+      "testCases": [
+        {
+          "description": "200: should return articles filtered by topic",
+          "request": {
+            "method": "GET",
+            "url": "/api/articles?topic=football"
+          },
+          "expectedResponse": {
+            "statusCode": 200,
+            "body": [
+              {
+                "article_id": 34,
+                "title": "The Notorious MSG’s Unlikely Formula For Success",
+                "topic": "football",
+                "author": "cooking",
+                "created_at": "grumpy19",
+                "votes": 0,
+                "article_img_url": "https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?w=700&h=700"
+              }
+            ]
+          }
+        }
+      ]
+    }
   
 }

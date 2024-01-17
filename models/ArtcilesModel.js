@@ -5,6 +5,12 @@ const fetchArticles = (id) => {
     return db.query(querySort)
 };
 
+const fetchArticlesByTopic = (topic) => {
+  const query = 'SELECT * FROM articles WHERE topic = $1';
+  return db.query(query, [topic]);
+};
+
+
 const fetchAllArticles = () => {
     let querySort = `SELECT * FROM articles`;
     return db.query(querySort)
@@ -68,6 +74,15 @@ const fetchCommentCount = (articleId) => {
       })
   }
   
+
+
+
+
+
+
+
+
+
 module.exports = {
-    fetchArticles,fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes
+    fetchArticles,fetchAllArticles,fetchCommentCount,fetchArticleComments,insertCommentFunction,updateArticleVotes,fetchArticlesByTopic
 }
