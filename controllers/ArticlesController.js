@@ -113,7 +113,7 @@ const deleteCommentByIdController = (req, res, next) => {
       if(!deletedComment){
         return res.status(404).json({ status: 404, msg: 'Comment not found' });
       }
-      res.status(200).json({ deletedComment });
+      res.status(204).json();
     })
     .catch((err) => {
       res.status(500).json({ status: 500, msg: 'Internal Server Error' });

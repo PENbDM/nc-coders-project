@@ -114,7 +114,7 @@ describe('/api/articles/:article_id/comments', () => {
   describe('POST /api/articles/1/comments', () => {
     test('201: status code and contain the expected data type and fields', async () => {
       const newComment = {
-        username: 'dimatest',
+        username: 'grumpy19',
         body: 'testtesttesttest',
       };
       const res = await request(app)
@@ -199,12 +199,12 @@ describe('/api/articles/:article_id', () => {
 
 describe('/api/comments/:comment_id', () => {
   describe('DELETE /api/comments/:comment_id', () => {
-    test('200: when deleting a valid comment', async () => {
-      const validCommentId = 6;
+    test('204: when deleting a valid comment', async () => {
+      const validCommentId = 5;
       const res = await request(app).delete(`/api/comments/${validCommentId}`);
       
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty('deletedComment');
+      expect(res.statusCode).toBe(204);
+      expect(res.body).toEqual({})
     });
 
     test('400: when missing or invalid comment_id', async () => {
