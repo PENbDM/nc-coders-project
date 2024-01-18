@@ -1,12 +1,15 @@
 const request = require("supertest");
 const db = require("../db/connection.js");
 const app = require("../app.js");
-const {runSeed} = require('../db/seeds/run-seed.js')
-
+const seed = require('../db/seeds/seed.js')
+const testData = require('../db/data/development-data/index.js')
 beforeEach(() => {
-  return runSeed();
+  return seed(testData);
 });
 
+afterAll(()=>{
+  return db.end()
+})
 
 describe("/api/articles:/article_id", () => {
     describe("GET /api/articles/:article_id", () => {
