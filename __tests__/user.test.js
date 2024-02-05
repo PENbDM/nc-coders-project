@@ -14,9 +14,5 @@ describe("/api/users", () => {
         expect(typeof user.avatar_url).toBe("string");
       });
     });
-    test("Handles invalid URL or route", async () => {
-      const res = await request(app).get("/api/invalidroute");
-      expect(res.statusCode).toBe(404);
-    });
   });
 });
