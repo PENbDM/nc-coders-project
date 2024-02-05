@@ -3,7 +3,7 @@ const cors = require('cors');
 const {getTopics} = require('./controllers/TopicsController')
 const {getApi} = require('./controllers/ApiController')
 const {getArticlesById,getAllArticles,getArticlesByIdAndComments,postCommentForArticleById,patchArticlesByID,deleteCommentByIdController} = require('./controllers/ArticlesController')
-const {getUsers} = require('./controllers/UserController')
+const {getUsers, getUserByName, createUserController} = require('./controllers/UserController')
 
 const app = express();
 app.use(express.json());
@@ -21,7 +21,8 @@ app.patch('/api/articles/:article_id',patchArticlesByID)
 app.delete('/api/comments/:comment_id',deleteCommentByIdController)
 
 app.get('/api/users',getUsers)
-
+app.get('/api/users/:username',getUserByName)
+app.post('/api/users/',createUserController)
 app.use((err, req, res, next) => {
     if (err.message === "Invalid article_id") {
       return res.status(400).json({ error: err.message });
